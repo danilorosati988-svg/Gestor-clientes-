@@ -1,34 +1,113 @@
+
 HTML
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Painel</title>
-  <style>
-    body { background:#111; color:#fff; font-family:Arial; }
-    input, button { padding:8px; margin:5px; }
-    .card { background:#222; padding:10px; margin:10px; }
-  </style>
+<title>Painel PRO</title>
+<style>
+body {
+  background:#0b0b0b;
+  color:#fff;
+  font-family:Arial;
+}
+
+h2 {
+  text-align:center;
+}
+
+.container {
+  max-width:900px;
+  margin:auto;
+}
+
+input {
+  padding:10px;
+  margin:5px;
+  border:none;
+  border-radius:5px;
+}
+
+button {
+  padding:10px;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+.btn {
+  background:#e50914;
+  color:#fff;
+}
+
+.card {
+  background:#1a1a1a;
+  padding:15px;
+  margin:10px 0;
+  border-radius:10px;
+}
+
+.vencido {
+  border-left:5px solid red;
+}
+
+.ativo {
+  border-left:5px solid green;
+}
+
+.topo {
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.box {
+  background:#111;
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+  width:30%;
+}
+</style>
 </head>
+
 <body>
 
-<h2>Painel de Clientes</h2>
+<div class="container">
+
+<h2>📊 Painel de Clientes</h2>
+
+<div class="topo">
+  <div class="box">Total<br><span id="total"></span></div>
+  <div class="box">Ativos<br><span id="ativos"></span></div>
+  <div class="box">Vencidos<br><span id="vencidos"></span></div>
+</div>
 
 <input id="nome" placeholder="Nome">
-<input id="plano" placeholder="Plano">
-<input id="vencimento" placeholder="Vencimento">
-<button onclick="salvar()">Salvar</button>
+<input id="whatsapp" placeholder="WhatsApp">
+<input id="servidor" placeholder="Servidor">
+<input id="app" placeholder="Aplicativo">
+<input id="vencimento" type="date">
+<input id="obs" placeholder="Observação">
+
+<button class="btn" onclick="salvar()">+ Adicionar Cliente</button>
 
 <div id="lista"></div>
 
+</div>
+
 <script>
+
 let clientes = JSON.parse(localStorage.getItem('clientes')) || [];
 
 function salvar(){
   let cliente = {
     id: Date.now(),
     nome: nome.value,
-    plano: plano.value,
-    vencimento: vencimento.value
+    whatsapp: whatsapp.value,
+    servidor: servidor.value,
+    app: app.value,
+    vencimento: vencimento.value,
+    obs: obs.value
   };
 
   clientes.push(cliente);
@@ -37,22 +116,53 @@ function salvar(){
 }
 
 function render(){
+
+  let hoje = new Date();
+  let total = clientes.length;
+  let ativos = 0;
+  let vencidos = 0;
+
   let html = "";
+
   clientes.forEach(c => {
+
+    let dataVenc = new Date(c.vencimento);
+    let status = dataVenc < hoje;
+
+    if(status) vencidos++;
+    else ativos++;
+
     html += `
-    <div class="card">
+    <div class="card ${status ? 'vencido':'ativo'}">
       <b>${c.nome}</b><br>
-      Plano: ${c.plano}<br>
-      Vencimento: ${c.vencimento}<br>
-      <a href="cliente.html?id=${c.id}" target="_blank">Abrir Cliente</a>
+      📱 ${c.whatsapp}<br>
+      📡 ${c.servidor}<br>
+      📺 ${c.app}<br>
+      📅 ${c.vencimento}<br>
+      📝 ${c.obs}<br><br>
+
+      <button onclick="whats('${c.whatsapp}','${c.nome}')">
+      Cobrar WhatsApp
+      </button>
+
+      <a href="cliente.html?id=${c.id}" target="_blank">Abrir</a>
     </div>
     `;
   });
 
   document.getElementById('lista').innerHTML = html;
+  document.getElementById('total').innerText = total;
+  document.getElementById('ativos').innerText = ativos;
+  document.getElementById('vencidos').innerText = vencidos;
+}
+
+function whats(numero, nome){
+  let msg = `Olá ${nome}, seu plano IPTV venceu. Regularize para evitar bloqueio.`;
+  window.open(`https://wa.me/55${numero}?text=${encodeURIComponent(msg)}`);
 }
 
 render();
+
 </script>
 
 </body>
