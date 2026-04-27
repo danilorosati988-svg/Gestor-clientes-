@@ -1,0 +1,59 @@
+HTML
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Painel</title>
+  <style>
+    body { background:#111; color:#fff; font-family:Arial; }
+    input, button { padding:8px; margin:5px; }
+    .card { background:#222; padding:10px; margin:10px; }
+  </style>
+</head>
+<body>
+
+<h2>Painel de Clientes</h2>
+
+<input id="nome" placeholder="Nome">
+<input id="plano" placeholder="Plano">
+<input id="vencimento" placeholder="Vencimento">
+<button onclick="salvar()">Salvar</button>
+
+<div id="lista"></div>
+
+<script>
+let clientes = JSON.parse(localStorage.getItem('clientes')) || [];
+
+function salvar(){
+  let cliente = {
+    id: Date.now(),
+    nome: nome.value,
+    plano: plano.value,
+    vencimento: vencimento.value
+  };
+
+  clientes.push(cliente);
+  localStorage.setItem('clientes', JSON.stringify(clientes));
+  render();
+}
+
+function render(){
+  let html = "";
+  clientes.forEach(c => {
+    html += `
+    <div class="card">
+      <b>${c.nome}</b><br>
+      Plano: ${c.plano}<br>
+      Vencimento: ${c.vencimento}<br>
+      <a href="cliente.html?id=${c.id}" target="_blank">Abrir Cliente</a>
+    </div>
+    `;
+  });
+
+  document.getElementById('lista').innerHTML = html;
+}
+
+render();
+</script>
+
+</body>
+</html>
