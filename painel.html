@@ -156,10 +156,13 @@ function render(){
 }
 
 function whats(numero, nome){
-  let msg = `Olá ${nome}, seu plano IPTV venceu. Regularize para evitar bloqueio.`;
+  let msg = `Olá ${nome}, seu plano IPTV vence em 3 dias. Regularize para evitar bloqueio.`;
   window.open(`https://wa.me/55${numero}?text=${encodeURIComponent(msg)}`);
 }
-
+function whats(numero, nome){
+  let msg = `Olá ${nome}, seu plano IPTV venceu. Regularize para voltar a assistir.`;
+  window.open(`https://wa.me/55${numero}?text=${encodeURIComponent(msg)}`);
+  }
 render();
 
 </script>
